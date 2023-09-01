@@ -18,14 +18,28 @@ function changeSizeSelectCharts(selectCharts: Array<HTMLDivElement>, newWidthPx:
     });
 }
 
-// Get all dashboard components
-const dashboardComponents: HTMLCollectionOf<Element> = document.getElementsByClassName(
-    "componentWrapper componentLoading dropshadow ui-resizable ui-draggable ui-draggable-handle"
-);
-const dbCompArr: Array<HTMLDivElement> = Array.from(dashboardComponents) as Array<HTMLDivElement>;
+function selectDashboardComponents(): Array<HTMLDivElement> | void {
+    // Open edit mode for main dashboard
+    const mainDashboard = document.getElementById("dashboard") as HTMLDivElement;
 
-// Select line and area charts + modify width/height of main component
-const lineCharts = getLineAreaCharts(dbCompArr);
-console.log(lineCharts);
-changeSizeSelectCharts(lineCharts, 225, 550);
-console.log(lineCharts);
+    if (mainDashboard && (mainDashboard.classList.length === 0 || mainDashboard.className === "")) {
+        const editOption = document.getElementById("ui-id-2") as HTMLLIElement;
+        editOption.click();
+    } else if (!mainDashboard) {
+        console.log("Could not find element with id='dashboard'");
+    }
+            
+    // Select dashboard components in edit mode
+    const dashboardComponents = Array.from(
+        document.getElementsByClassName(
+            "componentWrapper componentLoading dropshadow ui-resizable ui-draggable ui-draggable-handle"
+        ) as HTMLCollectionOf<HTMLDivElement>
+    );
+    if (!dashboardComponents || dashboardComponents.length === 0) {
+        console.log("Could not get dashboardComponents in edit-mode")
+        return
+    }
+    
+    return dashboardComponents
+}
+
