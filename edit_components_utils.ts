@@ -56,7 +56,7 @@ export function selectDashboardComponents(): Array<HTMLDivElement> | void {
     
 }
 
-export function moveUpSelectedComponents(
+export function moveSelectedComponents(
     incrementValueTop: number,
     incrementValueLeft: number,
     dashboardComponents: Array<HTMLDivElement>
