@@ -1,23 +1,3 @@
-export function getLineAreaCharts(parentComponents: Array<HTMLDivElement>): Array<HTMLDivElement> {
-    return parentComponents.filter(chart => {
-        // Check if it contains a <path> with 'd' attribute starting with 'M' and 'L' (typical for lines)
-        let hasLineOrArea: Element | null = chart.querySelector('svg path[d^="M"][d*="L"]');
-        // Check if it doesn't have the arcs typical for pie charts
-        let notPie: boolean = !chart.querySelector('svg path[d^="M"][d*="A"]');
-
-        return hasLineOrArea && notPie;
-    });
-}
-
-export function changeSizeSelectCharts(selectCharts: Array<HTMLDivElement>, newWidthPx: number, newHeightPx: number): void {
-    selectCharts.forEach(element => {
-        if(element) {  // Check if element exists
-            element.style.width = `${newWidthPx}px`;
-            element.style.height = `${newHeightPx}px`;
-        }
-    });
-}
-
 export function selectDashboardComponents(): Array<HTMLDivElement> | void {
     // Get dashboard inside iframe container
     const iframe: HTMLIFrameElement | null = document.querySelector('iframe');
@@ -55,6 +35,27 @@ export function selectDashboardComponents(): Array<HTMLDivElement> | void {
     }
     
 }
+
+export function getLineAreaCharts(parentComponents: Array<HTMLDivElement>): Array<HTMLDivElement> {
+    return parentComponents.filter(chart => {
+        // Check if it contains a <path> with 'd' attribute starting with 'M' and 'L' (typical for lines)
+        let hasLineOrArea: Element | null = chart.querySelector('svg path[d^="M"][d*="L"]');
+        // Check if it doesn't have the arcs typical for pie charts
+        let notPie: boolean = !chart.querySelector('svg path[d^="M"][d*="A"]');
+
+        return hasLineOrArea && notPie;
+    });
+}
+
+export function changeSizeSelectCharts(selectCharts: Array<HTMLDivElement>, newWidthPx: number, newHeightPx: number): void {
+    selectCharts.forEach(element => {
+        if(element) {  // Check if element exists
+            element.style.width = `${newWidthPx}px`;
+            element.style.height = `${newHeightPx}px`;
+        }
+    });
+}
+
 
 export function moveSelectedComponents(
     incrementValueTop: number,
