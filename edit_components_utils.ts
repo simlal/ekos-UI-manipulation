@@ -1,4 +1,5 @@
-export function selectDashboardComponents(): Array<HTMLDivElement> | void {
+// Dashboard components edit
+function selectDashboardComponents(): Array<HTMLDivElement> | void {
     // Get dashboard inside iframe container
     const iframe: HTMLIFrameElement | null = document.querySelector('iframe');
     if (iframe) {
@@ -36,7 +37,7 @@ export function selectDashboardComponents(): Array<HTMLDivElement> | void {
     
 }
 
-export function getLineAreaCharts(parentComponents: Array<HTMLDivElement>): Array<HTMLDivElement> {
+function getLineAreaCharts(parentComponents: Array<HTMLDivElement>): Array<HTMLDivElement> {
     return parentComponents.filter(chart => {
         // Check if it contains a <path> with 'd' attribute starting with 'M' and 'L' (typical for lines)
         let hasLineOrArea: Element | null = chart.querySelector('svg path[d^="M"][d*="L"]');
@@ -47,7 +48,7 @@ export function getLineAreaCharts(parentComponents: Array<HTMLDivElement>): Arra
     });
 }
 
-export function changeSizeSelectCharts(selectCharts: Array<HTMLDivElement>, newWidthPx: number, newHeightPx: number): void {
+function changeSizeSelectCharts(selectCharts: Array<HTMLDivElement>, newWidthPx: number, newHeightPx: number): void {
     selectCharts.forEach(element => {
         if(element) {  // Check if element exists
             element.style.width = `${newWidthPx}px`;
@@ -57,7 +58,7 @@ export function changeSizeSelectCharts(selectCharts: Array<HTMLDivElement>, newW
 }
 
 
-export function moveSelectedComponents(
+function moveSelectedComponents(
     incrementValueTop: number,
     incrementValueLeft: number,
     dashboardComponents: Array<HTMLDivElement>
@@ -90,3 +91,59 @@ export function moveSelectedComponents(
     })
 }
 
+
+
+// Reports edit
+function swapFermentersReport(currentFermenter: string, newFermenter: string): void {
+    // Get nested iframe container and inner document
+    const firstIframe: HTMLIFrameElement | null = document.querySelector('iframe');
+    if (firstIframe) {
+        const firstInnerDoc: Document | null = firstIframe.contentDocument
+
+        if (firstInnerDoc) {
+            const secondIframe: HTMLIFrameElement | null = firstInnerDoc.querySelector('iframe');
+
+            if (secondIframe) {
+                const secondInnerDoc: Document | null = secondIframe.contentDocument
+
+                if (secondInnerDoc) {
+                    // Swap fermenters in reportName + description
+                    let reportName = secondInnerDoc.getElementById("txtReportName") as HTMLInputElement
+                    reportName.value = reportName.value.replace(currentFermenter, newFermenter)
+
+                    // TODO SWAP DESCRIPTION
+                    let reportDescription = document.getElementById("reportDescription") as HTMLInputElement
+                    reportDescription.value = reportDescription.value.replace(currentFermenter, newFermenter)
+
+                    // TODO SWAP
+                    let filterCriteriaVal = Array.from(document.getElementsByClassName("filterCriteria_Value") as HTMLCollectionOf<HTMLSpanElement>) 
+                    let goodEle = null;
+
+                    for(let i = 0; i < filterCriteriaVal.length; i++) {
+                        if (filterCriteriaVal[i].innerHTML === currentFermenter) {
+                            goodEle = filterCriteriaVal[i];
+                            break;
+                        }
+                    }
+                    console.log(goodEle);
+
+                    // TODO CLICK + EDIT + SAVE
+
+                }
+                else {
+                    throw new Error("Could not find iframe.contentDocument.")
+                }
+            }
+            else {
+                throw new Error("No iframeElement found.")
+            }
+
+        }
+        else {
+            throw new Error("Could not find iframe.contentDocument.")
+        }
+    }
+    else {
+        throw new Error("No iframeElement found.")
+    }
+}
