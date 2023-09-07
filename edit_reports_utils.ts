@@ -229,7 +229,6 @@ async function copyAndEditReports(reportPosition: number, currentLocation: strin
     }
     const anchor = reports[reportPosition]
     // Open each report in new tab
-    console.log(anchor)
     anchor.click()
 
     // Await for the iframe to be present in the DOM
@@ -249,7 +248,6 @@ async function copyAndEditReports(reportPosition: number, currentLocation: strin
     for (let button of buttons) {
         let onClickAttr = button.getAttribute("onclick")
         if (onClickAttr === "CopyReport()") {
-            console.log(button)
             await waitForElement("button", firstInnerDoc)
             button.click()
             await delay(1000)    //TODO MAKE IT WORK WITHOUT HARDCODING A DELAY
@@ -271,19 +269,17 @@ async function copyAndEditReports(reportPosition: number, currentLocation: strin
     // Close the report decision page
     await waitForElement("button")
     buttons = firstInnerDoc.querySelectorAll("button")
-    console.log(buttons)
 
     for (let button of buttons) {
         let onClickAttr = button.getAttribute("onclick")
         if (onClickAttr === "closeForm();") {
-            console.log(button)
             await waitForElement("button", document)
             button.click()
         }
     }
     await delay(2000)
     await waitForElement("[class*='Link-reports-ui']")
-    console.log(`Done copying/editing from template=${anchor.innerHTML}`)
+    console.log(`Copied template ${anchor.innerHTML} to newLocation=${newLocation}`)
 }
 
 async function copyEditMultipleReports(currentLocation: string, newLocation: string): Promise<void> {
@@ -292,6 +288,7 @@ async function copyEditMultipleReports(currentLocation: string, newLocation: str
 
     for (let i: number = 0; i < reports.length; i++) {
         await copyAndEditReports(i, currentLocation, newLocation)
+        console.log(`Completed report ${i + 1} / ${reports.length}`)
     }
-    console.log("Done copyEdits on all reports")
+    console.log("Finished copyEdits on all reports!")
 }
