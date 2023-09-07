@@ -30,7 +30,7 @@ touch tsconfig.json
   "compilerOptions": {
     /* Language and Environment */
     "target": "ES2016",
-    "lib": ["DOM", "ES2016"],
+    "lib": ["DOM", "DOM.ITERABLE", "ES2016"],
     /* Modules */
     "module": "commonjs",
     "esModuleInterop": true,
@@ -41,11 +41,24 @@ touch tsconfig.json
   }
 }
 ```
-##Usage
-Transpile to .js and use utility functions
+##Quick usage
+1. Transpile to .js and use utility functions
 ```bash
-tsc edit_components_utils.ts
+tsc --project tsconfig.json
 ```
-For example, in a dashboard session copy paste the `selectDashboardComponents()` and `moveSelectedComponents(incrementValueTop, incrementValueLeft, dashboardComponents)` in the console the call the functions as necessary.
+
+2. Login to Ekos pro and go to:
+    i. On navbar -> Reporting
+    ii. Then All Reports
+
+3. Pre-filter reports or pass an argument to `copyAndEditReports` to search for a given string in the reportName
+
+4. Open console and copy paste transpiled .js code
+
+5. Call the the entry point function to loop through all currently loaded reports and make the modifications
+```javascript
+// To copy the firstLocationFV01 to secondLocationFV01
+copyEditMultipleReports("firstLocationFV01", "secondLocationFV01")
+```
 
 
