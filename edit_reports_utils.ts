@@ -1,5 +1,5 @@
 // Helper functions
-function getDocumentFromIframe(iframe: HTMLIFrameElement | null): Document | null {
+export function getDocumentFromIframe(iframe: HTMLIFrameElement | null): Document | null {
     if (!iframe) return null
     return iframe.contentDocument || null
 }
@@ -113,7 +113,7 @@ async function waitForMutation(targetNode: Node, config: MutationObserverInit): 
     })
 }
 
-function delay(ms: number) {
+export function delay(ms: number) {
     return new Promise(resolve => setTimeout(resolve, ms))
 }
 
