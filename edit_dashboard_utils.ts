@@ -114,15 +114,23 @@ async function addCopyPasteComponent(
         const componentConfig = await waitForElement("#componentConfig", innerDoc) as HTMLDivElement
         if (!componentConfig) { throw new Error("Could not find new component config div.") }
 
+        // Select default option
+        const selectElement = await waitForElement("#componentConfigReport", innerDoc) as HTMLSelectElement;
+        if (selectElement.options.length > 0) { 
+            selectElement.selectedIndex = 0; 
+            const event = new Event('change');
+            selectElement.dispatchEvent(event); 
+        }
+
+        await delay (500)
         const componentConfigChildren = Array.from(componentConfig.children)
-        componentConfigChildren.forEach(element => {
+        for (let element of componentConfigChildren) {
             let onClickAttr = element.getAttribute("onclick")
             if (onClickAttr === "dashboard.componentedit_apply();return false;") {
                 let applyChangesButton = (element as any) as HTMLButtonElement
-                console.log(applyChangesButton)
                 applyChangesButton.click()
             }
-        })
+        }
         await waitForElement("#newcomponentArea", innerDoc)
         console.log(
             `Created + saved empty component ${i + 1} / ${componentsArr.length}`
@@ -149,13 +157,100 @@ async function addCopyPasteComponent(
             newCompoArr[i].style[propName as any] = componentsArr[i].style[propName as any]
         }
 
-        // Adjust the top position
-        let originalTop = parseInt(newCompoArr[i].style.top);
-        let newTopVal: number = originalTop + topSpacingBetween;
-        newCompoArr[i].style.top = newTopVal.toString() + "px";
+        // Store width and height
+        const compoHeight = parseInt(componentsArr[i].style.height)
+        const compoWidth = parseInt(componentsArr[i].style.width)
 
-        // Adjust title
+        // Adjust the styles in the newCompo (non-edit mode)
+        let baseTop = parseInt(newCompoArr[i].style.top);
+        let newTopVal: number = baseTop + topSpacingBetween;
+        newCompoArr[i].style.top = newTopVal.toString() + "px";
+        
         newCompoArr[i].children[0].innerHTML = newTitle
+
+        // Get charType from templateComponent
+        let oriCompoTitleDiv = componentsArr[i].children[0] as HTMLDivElement
+        oriCompoTitleDiv.click()
+        
+        const oriCompoConfig = await waitForElement("#componentConfig", innerDoc) as HTMLDivElement
+        if (!oriCompoConfig) { throw new Error("Could not find original component config div.") }
+        
+        // Get selected chartype + reportIndex and save
+        let selectedChartTypeId: string = ""
+        const oriCompoConfigChartTypeUL = innerDoc.getElementById("componentConfigChartType") as HTMLUListElement
+        const oriCompoConfigChartTypeULChildren = Array.from(oriCompoConfigChartTypeUL.children)
+        for (let oriLiEle of oriCompoConfigChartTypeULChildren) {
+            if (oriLiEle.className === "selected") {
+                selectedChartTypeId = oriLiEle.id
+            }
+        }
+        let selectElement = await waitForElement("#componentConfigReport", innerDoc) as HTMLSelectElement;
+        let selectedOptionOri: number = 0
+        if (selectElement.options.length > 0) { 
+            selectElement.selectedIndex = selectedOptionOri; 
+        }
+
+        const oriCompoConfigChildren = Array.from(oriCompoConfig.children)
+        for (let element of oriCompoConfigChildren) {
+            // save to exit
+            let onClickAttr = element.getAttribute("onclick")
+            if (onClickAttr === "dashboard.componentedit_apply();return false;") {
+                let applyChangesButton = (element as any) as HTMLButtonElement
+                applyChangesButton.click()
+            }
+        }
+        await waitForElement("#" + componentsArr[i].id, innerDoc)
+
+        // Adjust title and height/width inside editMode for newCompo
+        
+        // Open in editMode
+        let newCompoTitleDiv = newCompoArr[i].children[0] as HTMLDivElement
+        newCompoTitleDiv.click()
+        
+        const newCompoConfig = await waitForElement("#componentConfig", innerDoc) as HTMLDivElement
+        if (!newCompoConfig) { throw new Error("Could not find new component config div.") }
+        const newCompoConfigChildren = Array.from(newCompoConfig.children)
+
+        
+        // Change to proper selected chartype and save
+        const newCompoConfigChartTypeUL = innerDoc.getElementById("componentConfigChartType") as HTMLUListElement
+        let newCompoConfigChartTypeChildren = Array.from(newCompoConfigChartTypeUL.children)
+        for (let newLiEle of newCompoConfigChartTypeChildren) {
+            if (newLiEle.id === selectedChartTypeId) {
+                let selectedChartLiEle = newLiEle as HTMLLIElement
+                selectedChartLiEle.click()
+                await delay(500)
+            }
+        }
+        
+        // Change width + height
+        let newCompoConfigSizeHeight = innerDoc.getElementById("componentConfigSize_height") as HTMLInputElement
+        newCompoConfigSizeHeight.value = compoHeight.toString()
+
+        let newCompoConfigSizeWidth = innerDoc.getElementById("componentConfigSize_width") as HTMLInputElement
+        newCompoConfigSizeWidth.value = compoWidth.toString()
+        await delay(500)
+
+        // Select same report as ori compo
+        selectElement = await waitForElement("#componentConfigReport", innerDoc) as HTMLSelectElement;
+        if (selectElement.options.length > 0) { 
+            selectElement.selectedIndex = selectedOptionOri
+            const event = new Event('change');
+            selectElement.dispatchEvent(event); 
+        }
+        
+        // Change title
+        let newCompoConfigTitle = innerDoc.getElementById("componentConfigTitle") as HTMLInputElement
+        newCompoConfigTitle.value = newTitle
+
+        // Save to exit
+        for (let element of newCompoConfigChildren) {
+            let onClickAttr = element.getAttribute("onclick")
+            if (onClickAttr === "dashboard.componentedit_apply();return false;") {
+                let applyChangesButton = (element as any) as HTMLButtonElement
+                applyChangesButton.click()
+            }
+        }
     }
 }
 
