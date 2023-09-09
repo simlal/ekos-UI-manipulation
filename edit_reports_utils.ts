@@ -156,7 +156,7 @@ async function swapFermentersReport(
 
     // Filter swap based on DomMutation state
     if (useDomMutation && fermenterCriteriaEle!) {
-        await fermenterCriteriaEle.click()
+        fermenterCriteriaEle.click()
         await waitForMutation(secondInnerDoc, { childList: true, subtree: true })
 
         const filterEditModeEle: HTMLDivElement | null = secondInnerDoc.querySelector(".filterFieldEdit_Value")
