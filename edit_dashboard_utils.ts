@@ -90,7 +90,8 @@ async function addCopyPasteComponent(
     selectLastNCompo: number,
     topSpacingBetween: number,
     substringTitleToReplace: string,
-    substringTitleReplacement: string
+    substringTitleReplacement: string,
+    incrementSelectedReportByNCompo: boolean=true
 ): Promise<void> {
     // Open dashboard in edit mode
     const [iframe, innerDoc] = await openDashboardEditMode()
@@ -175,7 +176,7 @@ async function addCopyPasteComponent(
         const oriCompoConfig = await waitForElement("#componentConfig", innerDoc) as HTMLDivElement
         if (!oriCompoConfig) { throw new Error("Could not find original component config div.") }
         
-        // Get selected chartype + reportIndex and save
+        // Get selected chartype + reportIndex + legend and save
         let selectedChartTypeId: string = ""
         const oriCompoConfigChartTypeUL = innerDoc.getElementById("componentConfigChartType") as HTMLUListElement
         const oriCompoConfigChartTypeULChildren = Array.from(oriCompoConfigChartTypeUL.children)
@@ -185,9 +186,15 @@ async function addCopyPasteComponent(
             }
         }
         let selectElement = await waitForElement("#componentConfigReport", innerDoc) as HTMLSelectElement;
-        let selectedOptionOri: number = 0
+        let selectedOptionOri: number = 0    // Fallback val
         if (selectElement.options.length > 0) { 
-            selectElement.selectedIndex = selectedOptionOri; 
+            selectedOptionOri = selectElement.selectedIndex
+        }
+        
+        let selectLegendEle = await waitForElement("#componentConfigLegend", innerDoc) as HTMLSelectElement
+        let selectedLegendOri: number = 0    // fallback val
+        if (selectLegendEle.options.length > 0) { 
+            selectedLegendOri = selectLegendEle.selectedIndex
         }
 
         const oriCompoConfigChildren = Array.from(oriCompoConfig.children)
@@ -234,6 +241,7 @@ async function addCopyPasteComponent(
         // Select same report as ori compo
         selectElement = await waitForElement("#componentConfigReport", innerDoc) as HTMLSelectElement;
         if (selectElement.options.length > 0) { 
+            if (incrementSelectedReportByNCompo) { selectedOptionOri += selectLastNCompo}
             selectElement.selectedIndex = selectedOptionOri
             const event = new Event('change');
             selectElement.dispatchEvent(event); 
@@ -243,6 +251,14 @@ async function addCopyPasteComponent(
         let newCompoConfigTitle = innerDoc.getElementById("componentConfigTitle") as HTMLInputElement
         newCompoConfigTitle.value = newTitle
 
+        // Select the same legend pos as ori compo
+        selectLegendEle = await waitForElement("#componentConfigLegend", innerDoc) as HTMLSelectElement
+        if (selectLegendEle.options.length > 0) { 
+            selectLegendEle.selectedIndex = selectedLegendOri
+            const event = new Event('change');
+            selectLegendEle.dispatchEvent(event); 
+        }
+
         // Save to exit
         for (let element of newCompoConfigChildren) {
             let onClickAttr = element.getAttribute("onclick")
@@ -251,6 +267,7 @@ async function addCopyPasteComponent(
                 applyChangesButton.click()
             }
         }
+    console.log(`Done final copyEditPaste for compo ${i + 1} / ${componentsArr.length}}`)
     }
 }
 
