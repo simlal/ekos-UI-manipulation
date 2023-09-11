@@ -91,7 +91,7 @@ async function addCopyPasteComponent(
     topSpacingBetween: number,
     substringTitleToReplace: string,
     substringTitleReplacement: string,
-    incrementSelectedReportByNCompo: boolean=true
+    incrementSelectedReportByNCompo: number=selectLastNCompo
 ): Promise<void> {
     // Open dashboard in edit mode
     const [iframe, innerDoc] = await openDashboardEditMode()
@@ -241,7 +241,7 @@ async function addCopyPasteComponent(
         // Select same report as ori compo
         selectElement = await waitForElement("#componentConfigReport", innerDoc) as HTMLSelectElement;
         if (selectElement.options.length > 0) { 
-            if (incrementSelectedReportByNCompo) { selectedOptionOri += selectLastNCompo}
+            selectedOptionOri += incrementSelectedReportByNCompo    // Default of same as lastNCompo
             selectElement.selectedIndex = selectedOptionOri
             const event = new Event('change');
             selectElement.dispatchEvent(event); 
