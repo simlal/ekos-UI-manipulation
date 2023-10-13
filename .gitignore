@@ -1,4 +1,8 @@
+# test html
 index.html
-js/
-*.js
+
 tsconfig.json
+
+# transpiled js
+edit_dashboard_utils.js
+edit_reports_utils.js
