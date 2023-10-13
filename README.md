@@ -6,8 +6,11 @@ Manipulate the Ekos UI in the browser with TypeScript
 ### Requirements
 - npm
 - TypeScript
+- Puppeteer
+- dotenv
 
 ### Steps
+**For TS UI manipulation scripts**
 1. Clone repo
 ```bash
 git clone https://github.com/simlal/ekos-UI-manipulation.git
@@ -41,7 +44,21 @@ touch tsconfig.json
   }
 }
 ```
-##Quick usage
+**For puppeteer scripts**
+```bash
+npm install puppeteer dotenv
+```
+Put your Ekos credentials in a .env file
+```bash
+touch .env
+# Include these in the .env file
+```
+```bash
+EKOS_USERNAME=your_username
+EKOS_PASSWORD=your_password
+```
+
+## Quick usage for TS UI manipulation scripts
 1. Transpile to .js and use utility functions
 ```bash
 tsc --project tsconfig.json
@@ -61,4 +78,7 @@ tsc --project tsconfig.json
 copyEditMultipleReports("firstLocationFV01", "secondLocationFV01")
 ```
 
+## Fetching reports with puppeteer
+1. Create a `data` folder inside root dir
+2. Run the script with `node fetchReports.js` to fetch all reports and save them in the `data` folder. You should see the browser running in `headless: false` mode.
 
