@@ -80,5 +80,6 @@ copyEditMultipleReports("firstLocationFV01", "secondLocationFV01")
 
 ## Fetching reports with puppeteer
 1. Create a `data` folder inside root dir
-2. Run the script with `node fetchReports.js` to fetch all reports and save them in the `data` folder. You should see the browser running in `headless: false` mode.
+2. Modify the queries and report names in `fetchReports.js` to your liking
+3. Run the script with `node fetchReports.js` to fetch all reports and save them in the `data` folder. You should see the browser running in `headless: false` mode.
 
