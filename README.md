@@ -77,9 +77,3 @@ tsc --project tsconfig.json
 // To copy the firstLocationFV01 to secondLocationFV01
 copyEditMultipleReports("firstLocationFV01", "secondLocationFV01")
 ```
-
-## Fetching reports with puppeteer
-1. Create a `data` folder inside root dir
-2. Modify the queries and report names in `fetchEkosReports.js` to your liking
-3. Run the script with `node fetchReports.js` to fetch all reports and save them in the `data` folder. You should see the browser if running in `headless: false` mode.
-
